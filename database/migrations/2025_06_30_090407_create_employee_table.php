@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('current_flag')->default(true);
 
             // Pastikan hanya ada SATU kombinasi NIK dan TRUE untuk current_flag
-            $table->unique(['nik', 'current_flag']); // <--- Ini penting!
+            // $table->unique(['nik', 'current_flag']); // <--- Ini penting!
 
             // Menyesuaikan indeks (komposit) dengan kolom 'nik'
             // $table->index(['nik', 'tanggal_mulai_efektif', 'tanggal_akhir_efektif']);

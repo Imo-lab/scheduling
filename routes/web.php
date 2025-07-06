@@ -11,6 +11,7 @@ Route::get('/', function () {
 
 Route::resource('employee', employeeController::class);
 Route::get('/employee/{nik}/history',[employeeController::class, 'showHistory'])->name('employee.history');
+Route::put('/employee/{nik}/deactivate', [employeeController::class, 'deactivateAgent'])->name('employee.deactivate');
 
 Route::resource('kpi', kpiController::class);
 Route::post('kpi', [kpiController::class,'uploadFile'])->name('kpi.uploadFile');

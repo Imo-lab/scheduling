@@ -90,6 +90,26 @@ class employeeController extends Controller
             'Quality Assurance',
             'Quality Control',
             'SPV',
+            'Helpdesk Bank Kalbar',
+            'Helpdesk Bank NTT',
+            'Helpdesk EJO',
+            'Helpdesk Bank Papua',
+            'Helpdesk Bank Kaltimtara',
+            'Helpdesk Bank Nagari',
+            'Helpdesk BPD Jatim',
+            'Helpdesk BJB',
+            'Helpdesk Bank Sumsel Babel',
+            'Helpdesk NISP',
+            'Helpdesk Bank Sulteng',
+            'Helpdesk Bank Sumut',
+            'Helpdesk BNO',
+            'Helpdesk Bank Sulutgo',
+            'Helpdesk Bank Sultra',
+            'Helpdesk Bank NTB',
+            'Helpdesk Makassar',
+            'Helpdesk Bank Jambi',
+            'Helpdesk Bank Maluku',
+            'Helpdesk Bank Riau',
         ];
         sort($fungsi);
 
@@ -216,6 +236,26 @@ class employeeController extends Controller
             'Quality Assurance',
             'Quality Control',
             'SPV',
+            'Helpdesk Bank Kalbar',
+            'Helpdesk Bank NTT',
+            'Helpdesk EJO',
+            'Helpdesk Bank Papua',
+            'Helpdesk Bank Kaltimtara',
+            'Helpdesk Bank Nagari',
+            'Helpdesk BPD Jatim',
+            'Helpdesk BJB',
+            'Helpdesk Bank Sumsel Babel',
+            'Helpdesk NISP',
+            'Helpdesk Bank Sulteng',
+            'Helpdesk Bank Sumut',
+            'Helpdesk BNO',
+            'Helpdesk Bank Sulutgo',
+            'Helpdesk Bank Sultra',
+            'Helpdesk Bank NTB',
+            'Helpdesk Makassar',
+            'Helpdesk Bank Jambi',
+            'Helpdesk Bank Maluku',
+            'Helpdesk Bank Riau',
         ];
         $employee = employee::where('nik', $nik)->where('current_flag',true)->firstOrFail();
         return view('employee.edit', compact('employee','role','jabatan','fungsi'));
@@ -284,5 +324,27 @@ class employeeController extends Controller
         }
 
         return view('employee.history', compact('employeeHistory'));
+    }
+
+    public function deactivateAgent(Request $request, string $nik)
+    {
+        $request->validate([
+            'tanggal_akhir_efektif' => 'required|date|before_or_equal:today',
+        ]);
+
+        DB::transaction(function () use ($request, $nik) {
+            // Temukan record agen yang aktif saat ini
+            $currentemployee = employee::where('nik', $nik)
+                                  ->where('current_flag', true)
+                                  ->firstOrFail();
+
+            // Perbarui record aktif: set tanggal_akhir_efektif dan current_flag menjadi false
+            $currentemployee->update([
+                'tanggal_akhir_efektif' => $request->tanggal_akhir_efektif,
+                'current_flag' => false,
+            ]);
+        });
+
+        return redirect()->route('employee.index')->with('success', 'Agen ' . $nik . ' berhasil dinonaktifkan.');
     }
 }

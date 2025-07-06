@@ -96,6 +96,32 @@
                 <button type="submit" class="btn btn-warning">Update Agen</button>
                 <a href="{{ route('employee.index') }}" class="btn btn-secondary">Batal</a>
             </form>
+
+            <hr class="my-4">
+
+            {{-- Form untuk menandai agen nonaktif/resign --}}
+            @if ($employee->current_flag) {{-- Hanya tampilkan jika agen masih aktif --}}
+                <div class="alert alert-info" role="alert">
+                    <h5 class="alert-heading">Nonaktifkan Agen</h5>
+                    <p>Gunakan opsi ini jika agen ini sudah tidak aktif (resign, mutasi, dll.). Ini akan menutup riwayat aktifnya.</p>
+                    <form action="{{ route('employee.deactivate', $employee->nik) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menonaktifkan agen ini? Tindakan ini akan mengakhiri masa aktifnya.');">
+                        @csrf
+                        @method('PUT')
+                        <div class="mb-3">
+                            <label for="tanggal_akhir_efektif" class="form-label">Tanggal Nonaktif / Resign</label>
+                            <input type="date" class="form-control @error('tanggal_akhir_efektif') is-invalid @enderror" id="tanggal_akhir_efektif" name="tanggal_akhir_efektif" value="{{ old('tanggal_akhir_efektif', date('Y-m-d')) }}" required>
+                            @error('tanggal_akhir_efektif')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-danger">Nonaktifkan Agen Ini</button>
+                    </form>
+                </div>
+            @else
+                <div class="alert alert-warning" role="alert">
+                    Agen ini saat ini **tidak aktif**. Riwayatnya telah ditutup pada **{{ $employee->tanggal_akhir_efektif->format('d-m-Y') }}**.
+                </div>
+            @endif
         </div>
     </div>
 @endsection
